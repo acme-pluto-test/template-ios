@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.acme.local/bridge-schema.json",
+  "title": "acme webview bridge message",
+  "type": "object",
+  "required": [
+    "version",
+    "type",
+    "payload"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "type": {
+      "type": "string"
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "x-max-message-bytes": 65536,
+  "oneOf": [
+    {
+      "$ref": "#/$defs/auth.token"
+    },
+    {
+      "$ref": "#/$defs/auth.refresh.request"
+    },
+    {
+      "$ref": "#/$defs/theme.changed"
+    },
+    {
+      "$ref": "#/$defs/safe-area.changed"
+    },
+    {
+      "$ref": "#/$defs/navigation.ready"
+    }
+  ],
+  "$defs": {
+    "auth.token": {
+      "x-direction": "native-to-web",
+      "type": "object",
+      "required": [
+        "version",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "type": {
+          "const": "auth.token"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "accessToken",
+            "expiresAt"
+          ],
+          "properties": {
+            "accessToken": {
+              "type": "string",
+              "minLength": 1
+            },
+            "expiresAt": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "auth.refresh.request": {
+      "x-direction": "web-to-native",
+      "type": "object",
+      "required": [
+        "version",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "type": {
+          "const": "auth.refresh.request"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "enum": [
+                "expired",
+                "unauthorized"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "theme.changed": {
+      "x-direction": "native-to-web",
+      "type": "object",
+      "required": [
+        "version",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "type": {
+          "const": "theme.changed"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "mode"
+          ],
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "light",
+                "dark"
+              ]
+            },
+            "accentColor": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "examples": [
+                "#0A84FF",
+                "#34c759"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "safe-area.changed": {
+      "x-direction": "native-to-web",
+      "type": "object",
+      "required": [
+        "version",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "type": {
+          "const": "safe-area.changed"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ],
+          "properties": {
+            "top": {
+              "type": "number",
+              "minimum": 0
+            },
+            "right": {
+              "type": "number",
+              "minimum": 0
+            },
+            "bottom": {
+              "type": "number",
+              "minimum": 0
+            },
+            "left": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "navigation.ready": {
+      "x-direction": "web-to-native",
+      "type": "object",
+      "required": [
+        "version",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "type": {
+          "const": "navigation.ready"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "route"
+          ],
+          "properties": {
+            "route": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

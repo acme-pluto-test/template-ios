@@ -1,0 +1,15 @@
+# Starts from the SwiftLint defaults; what is changed here is a decision of the repository.
+excluded:
+  - .build
+  - Sources/PlutoBridge
+  - Tests/PlutoBridgeTests
+  - "*.xcodeproj"
+line_length:
+  warning: 160
+  error: 200
+  ignores_comments: true
+disabled_rules:
+  - trailing_comma
+opt_in_rules:
+  - empty_count
+  - closure_spacing

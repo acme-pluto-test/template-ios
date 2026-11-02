@@ -1,0 +1,74 @@
+# Door 5 of stack-pack-ios: the Xcode project is generated from this file (xcodegen generate) and is not committed.
+name: pluto-template
+options:
+  bundleIdPrefix: dev.pluto
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+packages:
+  PlutoCore:
+    path: .
+settings:
+  base:
+    # Door 2 of reference-scenario: the web app the build points at. xcodebuild ... PLUTO_WEB_ORIGIN=https://host[:port]
+    # PLUTO_WEB_START_URL=https://host[:port]/path overrides them; the Info.plist below reads them, the allowlist stays exact https.
+    PLUTO_WEB_ORIGIN: "https://app.example.com"
+    PLUTO_WEB_START_URL: "https://app.example.com/"
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: ""
+    DEVELOPMENT_TEAM: ""
+targets:
+  PlutoApp:
+    type: application
+    platform: iOS
+    sources: [App]
+    dependencies:
+      - package: PlutoCore
+        product: PlutoDomain
+      - package: PlutoCore
+        product: PlutoData
+      - package: PlutoCore
+        product: PlutoBridge
+      - package: PlutoCore
+        product: PlutoWebView
+      - package: PlutoCore
+        product: PlutoPresentation
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.pluto.template
+        PRODUCT_NAME: PlutoApp
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: App/Info.plist
+        TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: pluto-template
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        ITSAppUsesNonExemptEncryption: false
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        # The only page the web view may load: exact https origins, comma separated, no wildcard (door 4).
+        PlutoWebAllowlist: "$(PLUTO_WEB_ORIGIN)"
+        PlutoWebStartURL: "$(PLUTO_WEB_START_URL)"
+  PlutoUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [AppUITests]
+    dependencies:
+      - target: PlutoApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.pluto.template.uitests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  PlutoApp:
+    build:
+      targets:
+        PlutoApp: all
+        PlutoUITests: [test]
+    test:
+      targets: [PlutoUITests]
